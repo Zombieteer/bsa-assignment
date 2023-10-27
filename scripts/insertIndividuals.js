@@ -16,15 +16,16 @@ const pool = new Pool({
 });
 
 async function insertIndividuals(path) {
-  const individualExists = await db.oneOrNone(
-    `select 1 as exist from residents limit 1`
-  );
-  if (individualExists.exist) return;
+  // const individualExists = await db.oneOrNone(
+  //   `select 1 as exist from residents limit 1`
+  // );
+  // if (individualExists.exist) return;
 
   const readStream = fs.createReadStream(path);
 
   let jsonData = [],
-    batchSize = 10000;
+    batchSize = 10000,
+    count = 0;
 
   const parser = csv({
     noheader: false,
@@ -51,9 +52,10 @@ async function insertIndividuals(path) {
       row.coordinates = coordinates;
       row.state_id = null;
 
-      console.log(jsonData.length, "total converted rows");
+      console.log(jsonData.length, count, "total converted rows");
       jsonData.push(row);
-      if (jsonData.length === batchSize) {
+      count++;
+      if (jsonData.length === batchSize && count > 1000000) {
         parser.pause();
         await insertIntoDatabase(jsonData);
         jsonData = [];
