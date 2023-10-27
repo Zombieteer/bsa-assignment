@@ -3,11 +3,6 @@ const db = require("../utils/db");
 const geoJSONtoWKT = require("./convert");
 
 async function insertStates(path) {
-  const statesExists = await db.oneOrNone(
-    `select 1 as exist from states limit 1`
-  );
-  if (statesExists && statesExists.exist) return;
-
   console.log(path);
   fs.readFile(path, "utf8", async (err, data) => {
     if (err) {
