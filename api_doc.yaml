@@ -5,11 +5,11 @@ info:
   description: An API to retrieve information about states and residents.
 
 servers:
-  - url: http://url.com
+  - url: http://18.209.164.217:3003/api
     description: Production server
 
 paths:
-  /api/states:
+  /states:
     get:
       summary: Get all states
       description: Returns a list of all states
@@ -25,7 +25,7 @@ paths:
         '500':
           description: Internal server error
 
-  /api/states/{stateId}/residents:
+  /states/{stateId}/residents:
     get:
       summary: Get all residents from a specific state
       description: Returns a list of residents from a specific state based on state ID
