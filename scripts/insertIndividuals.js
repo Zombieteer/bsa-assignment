@@ -20,7 +20,7 @@ async function insertIndividuals(path) {
   const individualExists = await db.oneOrNone(
     `select 1 as exist from residents limit 1`
   );
-  if (individualExists.exist) return;
+  if (individualExists && individualExists.exist) return;
 
   const readStream = fs.createReadStream(path);
   client = await pool.connect();

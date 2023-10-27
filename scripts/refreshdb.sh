@@ -19,17 +19,17 @@ echo "Downloading the zip file from S3..."
 wget --no-check-certificate https://backend-assignment.s3.us-east-2.amazonaws.com/backend-assignment.zip
 echo "Extracting the zip file..."
 unzip backend-assignment.zip
+rm -rf backend-assignment.zip
 
 # save states data
-for file in ./backend-assignment/states/*.geojson; do
-    node ./scripts/insertStates.js "$file"
-done
+#for file in ./backend-assignment/states/*.geojson; do
+#    node ./scripts/insertStates.js "$file"
+#done
 
 # save individuals data
 node ./scripts/insertIndividuals.js "./backend-assignment/individuals.csv"
 
-# remove zip and extracted files
-rm backend-assignment.zip
+# remove extracted files
 rm -rf backend-assignment
 rm -rf __MACOSX
 
