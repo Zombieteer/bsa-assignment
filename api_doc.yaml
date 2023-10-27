@@ -1,0 +1,72 @@
+openapi: 3.0.0
+info:
+  title: States and Residents API
+  version: 1.0.0
+  description: An API to retrieve information about states and residents.
+
+servers:
+  - url: http://url.com
+    description: Production server
+
+paths:
+  /api/states:
+    get:
+      summary: Get all states
+      description: Returns a list of all states
+      responses:
+        '200':
+          description: A list of states
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/State'
+        '500':
+          description: Internal server error
+
+  /api/states/{stateId}/residents:
+    get:
+      summary: Get all residents from a specific state
+      description: Returns a list of residents from a specific state based on state ID
+      parameters:
+        - name: stateId
+          in: path
+          required: true
+          description: Unique ID of the state
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: A list of residents
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Resident'
+        '400':
+          description: Bad request (invalid state ID)
+        '500':
+          description: Internal server error
+
+components:
+  schemas:
+    State:
+      type: object
+      properties:
+        id:
+          type: integer
+          description: Unique identifier of the state
+        state_name:
+          type: string
+          description: Name of the state
+    Resident:
+      type: object
+      properties:
+        first_name:
+          type: string
+          description: First name of the resident
+        last_name:
+          type: string
+          description: Last name of the resident
