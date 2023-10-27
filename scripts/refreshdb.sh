@@ -20,7 +20,7 @@ wget --no-check-certificate https://backend-assignment.s3.us-east-2.amazonaws.co
 echo "Extracting the zip file..."
 unzip backend-assignment.zip
 
-save states data
+# save states data
 for file in ./backend-assignment/states/*.geojson; do
     node ./scripts/insertStates.js "$file"
 done
