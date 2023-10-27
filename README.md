@@ -83,3 +83,4 @@ To deploy the project on AWS, follow these steps:
 ## Caveats
 1. Deploying on EC2 instance is not via CI/CD pipeline, need to pull from repo on cloud everytime we make a change in code.
 2. Environment variables are not used, everything is hard coded. Can be easily achieved by using `dotenv`.
+3. Running the `individuals.csv` will take a lot of time, as it is processed in `batch of 10000 rows`, and also the size of EC2 machine is `free tier`.

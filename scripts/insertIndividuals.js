@@ -1,5 +1,6 @@
 const fs = require("fs");
 const csv = require("csvtojson");
+const db = require("../utils/db");
 const geoJSONtoWKT = require("./convert");
 const { Pool } = require("pg");
 
@@ -15,6 +16,11 @@ const pool = new Pool({
 });
 
 async function insertIndividuals(path) {
+  const individualExists = await db.oneOrNone(
+    `select 1 as exist from residents limit 1`
+  );
+  if (individualExists.exist) return;
+
   const readStream = fs.createReadStream(path);
 
   let jsonData = [],
