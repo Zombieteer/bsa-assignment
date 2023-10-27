@@ -18,11 +18,16 @@ const pool = new Pool({
 async function insertIndividuals(path) {
   const readStream = fs.createReadStream(path);
 
-  let jsonData = [];
+  let jsonData = [],
+    batchSize = 10000;
+
+  const parser = csv({
+    noheader: false,
+  });
 
   readStream
-    .pipe(csv())
-    .on("data", (data) => {
+    .pipe(parser)
+    .on("data", async (data) => {
       data = JSON.parse(data);
       const row = {
         first_name: data.first_name,
@@ -43,49 +48,49 @@ async function insertIndividuals(path) {
 
       console.log(jsonData.length, "total converted rows");
       jsonData.push(row);
+      if (jsonData.length === batchSize) {
+        parser.pause();
+        await insertIntoDatabase(jsonData);
+        jsonData = [];
+        parser.resume();
+      }
     })
     .on("end", async () => {
       // const residentsData = await getMoreDetails(jsonData);
-      await insertIntoDatabase(jsonData);
       console.log("Conversion completed!");
     });
 }
 
 async function insertIntoDatabase(rows) {
   try {
-    const batchSize = 10000;
     const client = await pool.connect();
     console.log("insert individual to db started");
-    for (let i = 0; i < rows.length; i += batchSize) {
-      const batch = rows.slice(i, i + batchSize);
+    await client.query("BEGIN");
+    try {
+      const insertPromises = rows.map((row) => {
+        const query = `
+          INSERT INTO residents (first_name, last_name, geog, coordinates, state_id)
+          VALUES 
+          ($1, $2, ST_Multi(ST_GeomFromText($3,4326)),
+          $4::jsonb, $5)
+        `;
+        const values = [
+          row.first_name,
+          row.last_name,
+          row.geog,
+          JSON.stringify(row.coordinates),
+          row.state_id,
+        ];
+        return client.query(query, values);
+      });
 
-      await client.query("BEGIN");
-      try {
-        const insertPromises = batch.map((row) => {
-          const query = `
-            INSERT INTO residents (first_name, last_name, geog, coordinates, state_id)
-            VALUES 
-            ($1, $2, ST_Multi(ST_GeomFromText($3,4326)),
-            $4::jsonb, $5)
-          `;
-          const values = [
-            row.first_name,
-            row.last_name,
-            row.geog,
-            JSON.stringify(row.coordinates),
-            row.state_id,
-          ];
-          return client.query(query, values);
-        });
+      await Promise.all(insertPromises);
 
-        await Promise.all(insertPromises);
-
-        await client.query("COMMIT");
-        console.log(i + batchSize, "individual inserted");
-      } catch (batchError) {
-        await client.query("ROLLBACK");
-        throw batchError;
-      }
+      await client.query("COMMIT");
+      console.log(rows.length, "individual inserted");
+    } catch (batchError) {
+      await client.query("ROLLBACK");
+      throw batchError;
     }
     console.log("insertIntoDatabase done");
   } catch (err) {
