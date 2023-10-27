@@ -1,3 +1,4 @@
 node_modules
-
 key
+__MACOSX/*/*
+.DS_Store

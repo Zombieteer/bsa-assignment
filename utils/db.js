@@ -20,6 +20,6 @@ const create = (databaseUrl) => {
   return db;
 };
 
-const BSADB = "postgres://bsa:bsa@localhost:5432/bsadb";
+const BSADB = "postgres://bsa:bsa@db:5432/bsadb";
 
 module.exports = create(BSADB);
