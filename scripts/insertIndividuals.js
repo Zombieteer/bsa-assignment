@@ -55,7 +55,10 @@ async function insertIndividuals(path) {
       console.log(jsonData.length, count, "total converted rows");
       jsonData.push(row);
       count++;
-      if (jsonData.length === batchSize && count > 1000000) {
+      if(count <= 1000000){
+        jsonData = [];
+      }
+      else if (jsonData.length === batchSize) {
         parser.pause();
         await insertIntoDatabase(jsonData);
         jsonData = [];
