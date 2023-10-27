@@ -14,6 +14,7 @@ const pool = new Pool({
   idleTimeoutMillis: 30000,
   connectionTimeoutMillis: 2000,
 });
+var client;
 
 async function insertIndividuals(path) {
   // const individualExists = await db.oneOrNone(
@@ -22,6 +23,7 @@ async function insertIndividuals(path) {
   // if (individualExists.exist) return;
 
   const readStream = fs.createReadStream(path);
+  client = await pool.connect();
 
   let jsonData = [],
     batchSize = 10000,
@@ -70,9 +72,7 @@ async function insertIndividuals(path) {
 
 async function insertIntoDatabase(rows) {
   try {
-    const client = await pool.connect();
     console.log("insert individual to db started");
-    await client.query("BEGIN");
     try {
       const insertPromises = rows.map((row) => {
         const query = `
@@ -93,17 +93,13 @@ async function insertIntoDatabase(rows) {
 
       await Promise.all(insertPromises);
 
-      await client.query("COMMIT");
       console.log(rows.length, "individual inserted");
     } catch (batchError) {
-      await client.query("ROLLBACK");
       throw batchError;
     }
     console.log("insertIntoDatabase done");
   } catch (err) {
     console.error("Error inserting data:", err);
-  } finally {
-    client.release();
   }
 }
 
