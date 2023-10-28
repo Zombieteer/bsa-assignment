@@ -22,9 +22,9 @@ unzip backend-assignment.zip
 rm -rf backend-assignment.zip
 
 # save states data
-#for file in ./backend-assignment/states/*.geojson; do
-#    node ./scripts/insertStates.js "$file"
-#done
+for file in ./backend-assignment/states/*.geojson; do
+    node ./scripts/insertStates.js "$file"
+done
 
 # save individuals data
 node ./scripts/insertIndividuals.js "./backend-assignment/individuals.csv"

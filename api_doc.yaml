@@ -5,7 +5,7 @@ info:
   description: An API to retrieve information about states and residents.
 
 servers:
-  - url: http://18.209.164.217:3003/api
+  - url: http://3.88.106.152:3003/api
     description: Production server
 
 paths:

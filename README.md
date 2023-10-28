@@ -6,8 +6,8 @@
 
 Basically there are 2 APIs
 
-1. http://18.209.164.217:3003/api/state -> <em>Response is states with there state ids</em>
-2. http://18.209.164.217:3003/api/:stateId/residents -> <em>Response is count of residents and list of residents from that state</em>.
+1. http://3.88.106.152:3003/api/state -> <em>Response is states with there state ids</em>
+2. http://3.88.106.152:3003/api/:stateId/residents -> <em>Response is count of residents and list of residents from that state</em>.
 
 ## Folder Structure
 
@@ -75,7 +75,7 @@ The server should now be running inside a Docker container on http://localhost:3
 ```
 The Github code repo is pulled in an EC2 instance and run using docker-compose.
 
-Currently hosted on __18.209.164.217:3003__
+Currently hosted on __3.88.106.152:3003__
 ```
 
 To deploy the project on AWS, follow these steps:

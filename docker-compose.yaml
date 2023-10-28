@@ -27,23 +27,24 @@ services:
     environment:
       DATABASE_URL: db://bsa:bsa@db/bsadb
     depends_on:
-      - job
+      # - job
+      - db
     networks:
       - app-network
     ports:
       - "3003:3003"
     entrypoint: ["node", "index.js"]
 
-  job:
-    build:
-      context: .
-      dockerfile: bsa-jobs.Dockerfile
-    depends_on:
-      - db
-    networks:
-      - app-network
-    entrypoint: ["sh", "scripts/refreshdb.sh"]
-    restart: "no"
+  # job:
+  #   build:
+  #     context: .
+  #     dockerfile: bsa-jobs.Dockerfile
+  #   depends_on:
+  #     - db
+  #   networks:
+  #     - app-network
+  #   entrypoint: ["sh", "scripts/refreshdb.sh"]
+  #   restart: "no"
   
 volumes:
   db-data:
