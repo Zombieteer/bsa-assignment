@@ -8,9 +8,8 @@ const getAllStates = (_) =>
 const getAllResidentsFromStateId = async (stateId) => {
   return await db.any(
     `
-        select  first_name, last_name from residents r 
-        join states s on ST_Intersects(s.state_polygon::geometry, r.geog::geometry)
-        and s.id = $1
+    select first_name, last_name from residents r
+    where r.state_id = $1 and r.is_dead = false
     `,
     [stateId]
   );

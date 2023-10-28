@@ -24,3 +24,4 @@ create table residents(
 
 create index resident_geog on residents using gist(geog);
 create index resident_not_dead on residents using gist(geog) where is_dead = false;
+create index resident_state_id_is_dead on residents(state_id) where is_dead = false;
