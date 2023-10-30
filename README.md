@@ -6,7 +6,7 @@
 
 Basically there are 2 APIs
 
-1. http://3.88.106.152:3003/api/state -> <em>Response is states with there state ids</em>
+1. http://3.88.106.152:3003/api/states -> <em>Response is states with there state ids</em>
 2. http://3.88.106.152:3003/api/:stateId/residents -> <em>Response is count of residents and list of residents from that state</em>.
 
 ## Folder Structure
